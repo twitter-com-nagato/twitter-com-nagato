@@ -231,31 +231,28 @@ class Nagato(object):
         Gets the maximum ID of statuses which this account sent a reply to.
         """
 
-        if not my_statuses:
+        if my_statuses == None:
             my_statuses = self.microblog.get_user_statuses(self.credential.id)
-            if not my_statuses:
-                self.logger.debug(
-                    '@%s hasn\'t replied yet.',
-                    self.credential.screen_name)
-                return 0
 
-        replied_status_ids = [
-                my_status.in_reply_to_status_id
-                for my_status in my_statuses
-                if my_status.in_reply_to_status_id]
-        if replied_status_ids:
-            last_replied_status_id = max(replied_status_ids)
+        if not my_statuses:
+            self.logger.debug(
+                '@%s hasn\'t sent any status yet.',
+                self.credential.screen_name)
+            return 0
+
+        my_last_status = my_statuses[0]
+        if my_last_status.in_reply_to_status_id:
             self.logger.debug(
                 '@%s replied to #%d most recently.',
                 self.credential.screen_name,
-                last_replied_status_id)
-            return last_replied_status_id
-
-        min_id = min([my_status.id for my_status in my_statuses])
-        self.logger.debug(
-            'Continue looking for replies from this account older than #%d.', min_id)
-        older_statuses = self.microblog.get_user_statuses(self.credential.id, min_id - 1)
-        return self.get_last_replied_status_id(older_statuses)
+                my_last_status.in_reply_to_status_id)
+            return my_last_status.in_reply_to_status_id
+        else:
+            self.logger.debug(
+                '@%s sent status #%d most recently.',
+                self.credential.screen_name,
+                my_last_status.id)
+            return my_last_status.id
 
     def get_last_sent_message_id(self):
         """
