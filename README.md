@@ -16,7 +16,7 @@
 お勧めの本を教えてくれます。「お勧めの本は？」とリプライで聞いてみましょう。あなたが今何に興味を持っているかを解析して，絶妙なチョイスでお勧めしてくれます。呟きの解析と書籍の検索にはYahoo! APIを利用しています。
 
 ## ソースコード
-Python 3.7で動作確認しています。ライセンスは[CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)です。
+Python 3.8で動作確認しています。ライセンスは[CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)です。
 
 ソースコードから動作させたい場合には、別途phrases.txtを用意する必要が有ります。phrases.txtはランダムな呟きに用いられるテキストファイルです。UTF-8で一行ずつ呟きを記入します。
 
