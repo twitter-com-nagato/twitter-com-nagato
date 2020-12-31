@@ -3,9 +3,11 @@
 ![Deploy main branch](https://github.com/twitter-com-nagato/twitter-com-nagato/workflows/Deploy%20main%20branch/badge.svg)
 
 ## 長門有希って誰？
+
 長門有希は，ライトノベル「涼宮ハルヒの憂鬱」シリーズに登場するキャラクターで，情報統合思念体によって作られた対有機生命体コンタクト用ヒューマノイド・インターフェースです。
 
 ## @nagato (Twitter)・@yukinagato (Mastodon)について
+
 @[nagato](https://twitter.com/nagato) (Twitter)と@[yukinagato](https://pawoo.net/@yukinagato) (Mastodon)は，平均24時間毎に長門有希の台詞を呟く**非公式**ボットです。リプライ~~かダイレクトメッセージ~~で話し掛けてやると適当な事を喋りますが，彼女は日本語が苦手なのかあまり会話になりません。
 
 自動的にフォローを返します。有機情報連結の解除（リムーブ）をしてほしい場合にはリムーブしてください。自動的にリムーブされます。
@@ -15,9 +17,15 @@
 2018年9月22日より，Twitter APIの仕様変更に伴いダイレクトメッセージへの応答を一時的に無効化しています。
 
 ## 書籍推薦
+
 お勧めの本を教えてくれます。「お勧めの本は？」とリプライで聞いてみましょう。あなたが今何に興味を持っているかを解析して，絶妙なチョイスでお勧めしてくれます。呟きの解析と書籍の検索にはYahoo! APIを利用しています。
 
+## 流速
+
+長門有希から見たタイムラインの流速を教えてくれます。「流速は？」とリプライで聞いてみましょう。
+
 ## ソースコード
+
 Python 3.8で動作確認しています。ライセンスは[CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/)です。
 
 ソースコードから動作させたい場合には、別途phrases.txtを用意する必要が有ります。phrases.txtはランダムな呟きに用いられるテキストファイルです。UTF-8で一行ずつ呟きを記入します。
@@ -39,10 +47,6 @@ Python 3.8で動作確認しています。ライセンスは[CC0 1.0](https://c
     export TWITTER_ACCESS_SECRET="..."
     export YAHOO_APPLICATION_ID="..."
     python3 /path/to/handler.py
-```
-
-```sh
-    sudo apt install npm
 ```
 
 ## 問い合わせ
@@ -101,14 +105,17 @@ Python 3.8で動作確認しています。ライセンスは[CC0 1.0](https://c
 ## 関連するTwitterアカウント
 
 ### 公式
+
 - @[nagato\_chan](https://twitter.com/nagato_chan)
 
 ### 非公式
+
 - @[NagatoBot](https://twitter.com/NagatoBot)
 - @[yNagato](https://twitter.com/yNagato)
 - @[nyagato\_bot](https://twitter.com/nyagato_bot)
 
 ## よくある質問
+
 <dl>
 <dt>よく@nagatoなんてID取れたね</dt>
 <dd>@<a href="https://twitter.com/masiko">masiko</a>に感謝。</dd>
