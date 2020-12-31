@@ -1,5 +1,7 @@
 # 対Twitter・Mastodonユーザコンタクト用非公式ボットインターフェース
 
+![Deploy main branch](https://github.com/twitter-com-nagato/twitter-com-nagato/workflows/Deploy%20main%20branch/badge.svg)
+
 ## 長門有希って誰？
 長門有希は，ライトノベル「涼宮ハルヒの憂鬱」シリーズに登場するキャラクターで，情報統合思念体によって作られた対有機生命体コンタクト用ヒューマノイド・インターフェースです。
 
