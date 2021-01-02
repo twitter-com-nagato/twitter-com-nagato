@@ -3,7 +3,7 @@ import urllib.parse
 import urllib.request
 
 
-class Yahoo:
+class YahooApi:
     def __init__(self, appid):
         self.appid = appid
 
@@ -29,28 +29,3 @@ class Yahoo:
             raise IOError('YAHOO! API ERROR "%s"' % response['Error'])
 
         return response
-
-    def get_key_phrase(self, sentence):
-        apiurl = 'http://jlp.yahooapis.jp/KeyphraseService/V1/extract'
-        response = self.api(apiurl, {
-            'output': 'json',
-            'sentence': sentence,
-        }, 'POST')
-        if response:
-            response = [k for k, v in sorted(
-                response.items(), key=lambda x:x[1], reverse=True)]
-
-        return response
-
-    def search_item(self, queries, params):
-        apiurl = 'http://shopping.yahooapis.jp/ShoppingWebService/V1/json/itemSearch'
-        params['query'] = ' '.join(queries)
-        response = self.api(apiurl, params)
-        available = 0
-        if response:
-            response = response['ResultSet']
-            available = int(response['totalResultsAvailable'])
-            returned = int(response['totalResultsReturned'])
-            response = [response['0']['Result'][str(i)] for i in range(returned)]
-
-        return (response, available)

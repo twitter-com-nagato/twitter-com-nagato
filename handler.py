@@ -7,10 +7,13 @@ This script has the entry point for the invocation as an AWS Lambda function.
 import logging
 import microblog.mastodon_api
 import microblog.twitter_api
-import nagato
 import os
 import traceback
+from book_search.yahoo_shopping_book_search import YahooShoppingBookSearch
+from keyword_extraction.yahoo_keyword_extraction import YahooKeywordExtraction
+from nagato import Nagato
 from slack_log_handler import SlackLogHandler
+from yahoo_api import YahooApi
 
 
 def handle(event, context):
@@ -28,18 +31,15 @@ def handle(event, context):
         logger.setLevel(logging.DEBUG)
 
         slack_webhook_url = os.getenv('SLACK_WEBHOOK_URL')
-        assert slack_webhook_url, 'SLACK_WEBHOOK_URL must be a valid Slack webhook URL but is not set.'
-        slack_handler = SlackLogHandler(
-            slack_webhook_url, format='%(levelname)s: %(message)s')
-        slack_handler.setLevel(logging.WARNING)
-        logger.addHandler(slack_handler)
+        if slack_webhook_url:
+            slack_handler = SlackLogHandler(
+                slack_webhook_url, format='%(levelname)s: %(message)s')
+            slack_handler.setLevel(logging.WARNING)
+            logger.addHandler(slack_handler)
 
         if os.getenv('NAGATO_LOG_STREAM'):
             stream_handler = logging.StreamHandler()
             logger.addHandler(stream_handler)
-
-        yahoo_application_id = os.getenv('YAHOO_APPLICATION_ID')
-        assert yahoo_application_id, 'YAHOO_APPLICATION_ID must be a Yahoo! Japan application ID but is not set.'
 
         twitter_consumer_key = os.getenv('TWITTER_CONSUMER_KEY')
         twitter_consumer_secret = os.getenv('TWITTER_CONSUMER_SECRET')
@@ -62,7 +62,13 @@ def handle(event, context):
         else:
             raise Exception('All mandatory environment variables are not set.')
 
-        bot = nagato.Nagato(api, yahoo_application_id)
+        yahoo_application_id = os.getenv('YAHOO_APPLICATION_ID')
+        assert yahoo_application_id, 'YAHOO_APPLICATION_ID must be a Yahoo! Japan application ID but is not set.'
+        yapi = YahooApi(yahoo_application_id)
+        book_search = YahooShoppingBookSearch(yapi)
+        keyword_extraction = YahooKeywordExtraction(yapi)
+
+        bot = Nagato(api, book_search, keyword_extraction)
         bot.run()
     except Exception:
         # Catch everything to avoid retrying failed invocations

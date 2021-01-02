@@ -11,7 +11,6 @@ import pytz
 import random
 import re
 import urllib
-import yahoo
 
 
 def ara2kan(ara):
@@ -119,26 +118,24 @@ class Nagato(object):
     A class for Nagato bot.
     """
 
-    def __init__(
-        self,
-        microblog,
-        yahoo_application_id
-    ):
+    def __init__(self, microblog, book_search, keyword_extraction):
 
         assert microblog, 'A microblog service should be specified.'
-        assert yahoo_application_id, 'Yahoo! Japan application ID is mandatory but not set.'
+        assert book_search, 'A book search service should be specified.'
+        assert keyword_extraction, 'A keyword extraction service should be specified.'
 
         # Add a null handler to suppress standard error outputs
         # even when there is no additional handler.
         self.logger = logging.getLogger(__name__)
         self.logger.addHandler(logging.NullHandler())
-        self.yapi = yahoo.Yahoo(yahoo_application_id)
+        self.book_search = book_search
+        self.keyword_extraction = keyword_extraction
         self.microblog = microblog
         self.tlspeed = 0
 
     def get_timeline_speed(self):
         """
-        Outputs the home timeline speed to the log.
+        Gets the number of statues in the home timeline per second.
         """
 
         if not self.tlspeed:
@@ -148,10 +145,10 @@ class Nagato(object):
             self.tlspeed = len(statuses) * 3600 / spent
         return self.tlspeed
 
-    def get_key_phrase(self, user_id):
+    def get_user_key_phrases(self, user_id):
         """
         Gets words from the user timeline except @replies and URIs
-        and extracts key phrases from them using Yahoo! Japan API.
+        and extracts key phrases from them using a keyword extractor.
         """
 
         statuses = self.microblog.get_user_statuses(user_id)
@@ -163,78 +160,69 @@ class Nagato(object):
         texts = ' '.join(words)
         self.logger.debug('Words in statuses of #%d: %s', user_id, texts)
 
-        # Access to Yahoo! API
-        return self.yapi.get_key_phrase(texts)
+        return self.keyword_extraction.extract(texts)
 
-    def recommend(self, key_phrases):
+    def recommend_book(self, key_phrases):
         """
-        Recommends a book based on the specified key phrases
-        using Yahoo! Japan item search API.
+        Recommends a book based on the specified key phrases using an item search API.
         """
 
-        self.logger.debug('Start a recommendation with keyphrases: %s', key_phrases)
-        cand = None
-        canl = 0
-        indexes = [0]
+        self.logger.debug('Start a book recommendation with key phrases: %s', key_phrases)
+        best_book = None
+        best_result_count = 0
+        key_phrase_indice = [0]
         while True:
             # Query
-            self.logger.debug('Indice: %s', indexes)
-            queries = [key_phrases[i] for i in indexes]
-            (item, total) = self.yapi.search_item(
-                queries, {'category_id': 10002, 'hits': 1})
-            self.logger.debug('%s -> %s (%d)', queries, item, total)
+            self.logger.debug('Key phrase indice: %s', key_phrase_indice)
+            queries = [key_phrases[i] for i in key_phrase_indice]
+            (top_book, result_count) = self.book_search.search(queries)
+            self.logger.debug('%s -> %s (%d)', queries, top_book, result_count)
 
             # Update the best result set
-            if total > 0 and (not cand or total < canl):
-                self.logger.debug('Candidate: %s -> %s', cand, item[0])
-                canl = total
-                cand = item[0]
+            if top_book and ((not best_book) or (result_count < best_result_count)):
+                self.logger.debug('Candidate: %s -> %s', best_book, top_book)
+                best_result_count = result_count
+                best_book = top_book
 
-            if total == 0:
+            if result_count == 0:
                 # Not found
-                if indexes[-1] < len(key_phrases) - 1:
+                if key_phrase_indice[-1] < len(key_phrases) - 1:
                     # Go ahead
-                    indexes[-1] += 1
-                elif len(indexes) > 1:
+                    key_phrase_indice[-1] += 1
+                elif len(key_phrase_indice) > 1:
                     # Go up
-                    indexes = indexes[:-1]
-                    if indexes[-1] < len(key_phrases) - 1:
-                        indexes[-1] += 1
+                    key_phrase_indice = key_phrase_indice[:-1]
+                    if key_phrase_indice[-1] < len(key_phrases) - 1:
+                        key_phrase_indice[-1] += 1
                     else:
                         break
                 else:
                     # No way
                     break
-            elif total == 1:
+            elif result_count == 1:
                 # Only one
                 break
             else:
                 # Many
-                if indexes[-1] < len(key_phrases) - 1:
+                if key_phrase_indice[-1] < len(key_phrases) - 1:
                     # More keywords
-                    indexes += [indexes[-1] + 1]
+                    key_phrase_indice += [key_phrase_indice[-1] + 1]
                 else:
                     # No way
                     break
 
-        if cand:
-            title = cand['Name']
-            url = cand['Url']
-            self.logger.info('Recommend: %s %s', title, url)
-            return (title, url)
-
-        self.logger.warning('Recommend: Not Found for %s', key_phrases)
-        return ('分からない', None)
+        self.logger.info('Recommend: %s', best_book)
+        return best_book
 
     def get_last_replied_status_id(self, my_statuses=None):
         """
         Gets the maximum ID of statuses which this account sent a reply to.
         """
 
-        if my_statuses == None:
+        if my_statuses is None:
             my_statuses = self.microblog.get_user_statuses(self.credential.id)
 
-        if not my_statuses:
+        if my_statuses is None:
             self.logger.debug(
                 '@%s hasn\'t sent any status yet.',
                 self.credential.screen_name)
@@ -332,17 +320,23 @@ class Nagato(object):
             self.logger.info('Following #%d', follower_id)
             self.microblog.follow(follower_id)
 
+    def get_book_recommendation(self, user_id):
+        key_phrases = self.get_user_key_phrases(user_id)
+        book = self.recommend_book(key_phrases[:10])
+        if book:
+            return (book.name, book.url)
+        else:
+            return ('分からない', None)
+
     def get_response(self, user_id, text):
         """
         Returns the status text and URL to respond to the specified text.
         """
 
         status = None
-        url = None
 
         if is_book_recommendation_request(text):
-            key_phrases = self.get_key_phrase(user_id)
-            (status, url) = self.recommend(key_phrases[:10])
+            return self.get_book_recommendation(user_id)
         elif is_greeting_request(text):
             status = get_greeting()
         elif is_timeline_speed_request(text):
@@ -350,7 +344,7 @@ class Nagato(object):
         else:
             status = get_random_phrase()
 
-        return (status, url)
+        return (status, None)
 
     def respond_reply(self, reply):
         """
