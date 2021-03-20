@@ -31,7 +31,7 @@ package:
 functions:
 
   nagato_twitter:
-    handler: handler.post_random_phrase
+    handler: handler.post
     events:
       - schedule: cron(10 7 * * ? *)
     environment:
@@ -57,7 +57,7 @@ functions:
     reservedConcurrency: 1
 
   yukinagato_mastodon:
-    handler: handler.post_random_phrase
+    handler: handler.post
     events:
       - schedule: cron(10 7 * * ? *)
     environment:

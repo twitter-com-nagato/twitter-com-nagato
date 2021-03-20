@@ -136,6 +136,7 @@ class Nagato(object):
         self.book_search = book_search
         self.keyword_extraction = keyword_extraction
         self.microblog = microblog
+        self.credential = self.microblog.verify_credentials()
         self.tlspeed = 0
 
     def getLogger(self):
@@ -356,6 +357,11 @@ class Nagato(object):
 
         return (status, None)
 
+    def respondNewReply(self):
+        reply = self.getNewReply()
+        if reply:
+            self.respondReply(reply)
+
     def respondReply(self, reply):
         """
         Reply to the specified incoming reply.
@@ -366,6 +372,11 @@ class Nagato(object):
         self.logger.info(
             'Sent a reply to @%s: %s',
             reply.user.screen_name, text)
+
+    def respondNewMessage(self):
+        message = self.getNewMessage()
+        if message:
+            self.respondMessage(message)
 
     def respondMessage(self, message):
         """
@@ -403,15 +414,8 @@ class Nagato(object):
         """
 
         self.logger.debug('Executing...')
-        self.credential = self.microblog.verify_credentials()
-
-        reply = self.getNewReply()
-        if reply:
-            self.respondReply(reply)
-
-        message = self.getNewMessage()
-        if message:
-            self.respondMessage(message)
+        self.respondNewMessage()
+        self.respondNewReply()
 
         # Post randomly roughly once a day.
         if not random.randrange(60 * 24):

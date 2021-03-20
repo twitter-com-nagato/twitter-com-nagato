@@ -85,25 +85,36 @@ def create_nagato():
     return nagato
 
 
+def post(event, context):
+    nagato = create_nagato()
+    nagato.postRandomPhrase()
+
+
 def refollow(event, context):
     nagato = create_nagato()
     nagato.refollow()
 
 
-def post_random_phrase(event, context):
+def reply(event, context):
     nagato = create_nagato()
-    nagato.postRandomPhrase()
+    nagato.respondNewReply()
+
+
+def run(event, context):
+    nagato = create_nagato()
+    nagato.run()
 
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
-        nagato = create_nagato()
-        nagato.run()
+        run(None, None)
     else:
         operation = sys.argv[1]
-        if operation == 'refollow':
+        if operation == 'post':
+            post(None, None)
+        elif operation == 'refollow':
             refollow(None, None)
-        elif operation == 'post_random_phrase':
-            post_random_phrase(None, None)
+        elif operation == 'reply':
+            reply(None, None)
         else:
             raise Exception('Unsupported operation: %s' % operation)
