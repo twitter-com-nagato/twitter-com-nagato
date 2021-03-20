@@ -1,6 +1,8 @@
 # 対Twitter・Mastodonユーザコンタクト用非公式ボットインターフェース
 
 ![Deploy main branch](https://github.com/twitter-com-nagato/twitter-com-nagato/workflows/Deploy%20main%20branch/badge.svg)
+[![Run flake8](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/flake8.yml/badge.svg)](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/flake8.yml)
+[![CodeQL](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/codeql-analysis.yml)
 
 ## 長門有希って誰？
 
