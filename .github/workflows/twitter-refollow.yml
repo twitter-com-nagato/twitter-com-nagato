@@ -1,0 +1,37 @@
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: Refollow on Twitter
+
+on:
+  schedule:
+  - cron: '0 10 * * *'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Download phrases
+      run: curl --output phrases.txt $NAGATO_PHRASES_URL
+      env:
+        NAGATO_PHRASES_URL: ${{ secrets.NAGATO_PHRASES_URL }}
+    - name: Refollow
+      run: python handler.py refollow
+      env:
+        NAGATO_LOG_STREAM: 1
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        TWITTER_CONSUMER_KEY: ${{ secrets.TWITTER_CONSUMER_KEY}
+        TWITTER_CONSUMER_SECRET: ${{ secrets.TWITTER_CONSUMER_SECRET }}
+        TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+        TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
+        YAHOO_APPLICATION_ID: ${{ secrets.YAHOO_APPLICATION_ID }}
