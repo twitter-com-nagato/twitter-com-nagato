@@ -2,11 +2,12 @@
 
 [![Python application](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/python-app.yml/badge.svg)](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/python-app.yml)
 [![CodeQL](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/codeql-analysis.yml)
-[![Post on Twitter](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/twitter-post-random-phrase.yml/badge.svg)](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/twitter-post-random-phrase.yml)
-[![Post on Mastodon](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/twitter-post-random-phrase.yml/badge.svg)](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/twitter-post-random-phrase.yml)
+[![Post on Twitter](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/twitter-post.yml/badge.svg)](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/twitter-post.yml)
+[![Post on Mastodon](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/mastodon-post.yml/badge.svg)](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/mastodon-post.yml)
 [![Refollow on Twitter](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/twitter-refollow.yml/badge.svg)](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/twitter-refollow.yml)
 [![Refollow on Mastodon](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/mastodon-refollow.yml/badge.svg)](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/mastodon-refollow.yml)
-
+[![Reply on Twitter](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/twitter-reply.yml/badge.svg)](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/twitter-reply.yml)
+[![Reply on Mastodon](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/mastodon-reply.yml/badge.svg)](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/mastodon-reply.yml)
 
 ## 長門有希って誰？
 
