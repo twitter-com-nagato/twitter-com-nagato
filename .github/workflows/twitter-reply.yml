@@ -4,7 +4,7 @@ name: Reply on Twitter
 
 on:
   schedule:
-  - cron: '* * * * *'
+  - cron: '*/5 * * * *'
 
 jobs:
   build:
