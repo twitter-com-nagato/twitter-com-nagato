@@ -2,7 +2,7 @@ from . import mastodon_user
 from . import microblog_status
 
 
-class Toot(microblog_status.Status):
+class Toot(microblog_status.MicroblogStatus):
     """
     A class which represents a toot on Mastodon.
     """

@@ -1,7 +1,7 @@
 from . import microblog_user
 
 
-class TwitterUser(microblog_user.User):
+class TwitterUser(microblog_user.MicroblogUser):
     def __init__(self, user_object):
         """
         Initializes a new instance of TwitterUser class from a User object.

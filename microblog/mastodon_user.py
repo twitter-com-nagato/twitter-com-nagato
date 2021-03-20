@@ -1,7 +1,7 @@
 from . import microblog_user
 
 
-class MastodonUser(microblog_user.User):
+class MastodonUser(microblog_user.MicroblogUser):
     def __init__(self, user_dict):
         """
         Initializes a new instance of MastodonUser class from a user dict.

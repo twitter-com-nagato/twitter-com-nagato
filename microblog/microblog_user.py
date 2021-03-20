@@ -1,4 +1,4 @@
-class User(object):
-    def __init__(self, id, screen_name):
-        self.id = id
-        self.screen_name = screen_name
+class MicroblogUser(object):
+    def __init__(self, id: str, screen_name: str):
+        self.id: str = id
+        self.screen_name: str = screen_name

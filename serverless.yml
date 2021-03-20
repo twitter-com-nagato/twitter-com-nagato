@@ -29,10 +29,11 @@ package:
     - .*/**
 
 functions:
+
   nagato_twitter:
-    handler: handler.handle
+    handler: handler.random_post
     events:
-      - schedule: rate(3 minutes)
+      - schedule: rate(10 7 * * ? *)
     environment:
       SLACK_WEBHOOK_URL: ${ssm:SLACK_WEBHOOK_URL}
       TWITTER_CONSUMER_KEY: ${ssm:TWITTER_CONSUMER_KEY}
@@ -41,10 +42,35 @@ functions:
       TWITTER_ACCESS_SECRET: ${ssm:TWITTER_ACCESS_SECRET}
       YAHOO_APPLICATION_ID: ${ssm:YAHOO_APPLICATION_ID}
     reservedConcurrency: 1
-  yukinagato_mastodon:
-    handler: handler.handle
+
+  nagato_twitter_refollow:
+    handler: handler.refollow
     events:
-      - schedule: rate(1 minute)
+      - schedule: rate(1 day)
+    environment:
+      SLACK_WEBHOOK_URL: ${ssm:SLACK_WEBHOOK_URL}
+      TWITTER_CONSUMER_KEY: ${ssm:TWITTER_CONSUMER_KEY}
+      TWITTER_CONSUMER_SECRET: ${ssm:TWITTER_CONSUMER_SECRET}
+      TWITTER_ACCESS_TOKEN: ${ssm:TWITTER_ACCESS_TOKEN}
+      TWITTER_ACCESS_SECRET: ${ssm:TWITTER_ACCESS_SECRET}
+      YAHOO_APPLICATION_ID: ${ssm:YAHOO_APPLICATION_ID}
+    reservedConcurrency: 1
+
+  yukinagato_mastodon:
+    handler: handler.random_post
+    events:
+      - schedule: cron(10 7 * * ? *)
+    environment:
+      SLACK_WEBHOOK_URL: ${ssm:SLACK_WEBHOOK_URL}
+      MASTODON_ACCESS_TOKEN: ${ssm:MASTODON_ACCESS_TOKEN}
+      MASTODON_API_BASE_URL: ${ssm:MASTODON_API_BASE_URL}
+      YAHOO_APPLICATION_ID: ${ssm:YAHOO_APPLICATION_ID}
+    reservedConcurrency: 1
+
+  yukinagato_mastodon_refollow:
+    handler: handle.refollow
+    events:
+      - schedule: rate(1 day)
     environment:
       SLACK_WEBHOOK_URL: ${ssm:SLACK_WEBHOOK_URL}
       MASTODON_ACCESS_TOKEN: ${ssm:MASTODON_ACCESS_TOKEN}

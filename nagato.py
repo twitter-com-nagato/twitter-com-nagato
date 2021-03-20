@@ -120,20 +120,28 @@ class Nagato(object):
 
     def __init__(self, microblog, book_search, keyword_extraction):
 
-        assert microblog, 'A microblog service should be specified.'
-        assert book_search, 'A book search service should be specified.'
-        assert keyword_extraction, 'A keyword extraction service should be specified.'
+        assert microblog
+        assert book_search
+        assert keyword_extraction
 
+        self.logger = self.getLogger()
+        # Since AWS Lambda may reuse the same function instance,
+        # handlers set in the previous execution can be still alive.
+        # In order to avoid adding duplicated handlers,
+        # clear all the existing handlers beforehand.
+        self.logger.handlers = []
         # Add a null handler to suppress standard error outputs
         # even when there is no additional handler.
-        self.logger = logging.getLogger(__name__)
         self.logger.addHandler(logging.NullHandler())
         self.book_search = book_search
         self.keyword_extraction = keyword_extraction
         self.microblog = microblog
         self.tlspeed = 0
 
-    def get_timeline_speed(self):
+    def getLogger(self):
+        return logging.getLogger(__name__)
+
+    def getTimelineSpeed(self):
         """
         Gets the number of statues in the home timeline per second.
         """
@@ -145,7 +153,7 @@ class Nagato(object):
             self.tlspeed = len(statuses) * 3600 / spent
         return self.tlspeed
 
-    def get_user_key_phrases(self, user_id):
+    def getUserKeyPhrases(self, user_id):
         """
         Gets words from the user timeline except @replies and URIs
         and extracts key phrases from them using a keyword extractor.
@@ -162,7 +170,7 @@ class Nagato(object):
 
         return self.keyword_extraction.extract(texts)
 
-    def recommend_book(self, key_phrases):
+    def recommendBook(self, key_phrases):
         """
         Recommends a book based on the specified key phrases using an item search API.
         """
@@ -214,7 +222,7 @@ class Nagato(object):
         self.logger.info('Recommend: %s', best_book)
         return best_book
 
-    def get_last_replied_status_id(self, my_statuses=None):
+    def getLastRepliedStatusId(self, my_statuses=None):
         """
         Gets the maximum ID of statuses which this account sent a reply to.
         """
@@ -242,7 +250,7 @@ class Nagato(object):
                 my_last_status.id)
             return my_last_status.id
 
-    def get_last_sent_message_id(self):
+    def getLastSentMessageId(self):
         """
         Gets the maximum ID of messages sent from this account.
         """
@@ -252,12 +260,12 @@ class Nagato(object):
         self.logger.debug('The last message ID is #%d.', last_sent_message_id)
         return last_sent_message_id
 
-    def get_new_message(self):
+    def getNewMessage(self):
         """
         Gets a new message which this account hasn't responded yet.
         """
 
-        last_sent_message_id = self.get_last_sent_message_id()
+        last_sent_message_id = self.getLastSentMessageId()
         messages = self.microblog.get_received_messages(last_sent_message_id + 1)
         for message in messages:
             assert message.id > last_sent_message_id
@@ -271,12 +279,12 @@ class Nagato(object):
 
         return None
 
-    def get_new_reply(self):
+    def getNewReply(self):
         """
         Gets a new reply which this account hasn't responded yet.
         """
 
-        max_replied_status_id = self.get_last_replied_status_id()
+        max_replied_status_id = self.getLastRepliedStatusId()
         replies = self.microblog.get_replies(max_replied_status_id + 1)
         self.logger.debug(
             'Received %d new replies since #%d.',
@@ -320,15 +328,17 @@ class Nagato(object):
             self.logger.info('Following #%d', follower_id)
             self.microblog.follow(follower_id)
 
-    def get_book_recommendation(self, user_id):
-        key_phrases = self.get_user_key_phrases(user_id)
-        book = self.recommend_book(key_phrases[:10])
+    def getBookRecommendation(self, user_id):
+        key_phrases = self.getUserKeyPhrases(user_id)
+        self.logger.info('Book Recommendation Keyphrases: %s', key_phrases)
+        book = self.recommendBook(key_phrases[:10])
+        self.logger.info('Book Recommendation: %s', book)
         if book:
             return (book.name, book.url)
         else:
             return ('分からない', None)
 
-    def get_response(self, user_id, text):
+    def getResponse(self, user_id, text):
         """
         Returns the status text and URL to respond to the specified text.
         """
@@ -336,28 +346,28 @@ class Nagato(object):
         status = None
 
         if is_book_recommendation_request(text):
-            return self.get_book_recommendation(user_id)
+            return self.getBookRecommendation(user_id)
         elif is_greeting_request(text):
             status = get_greeting()
         elif is_timeline_speed_request(text):
-            status = '流速 %d' % self.get_timeline_speed()
+            status = '流速 %d' % self.getTimelineSpeed()
         else:
             status = get_random_phrase()
 
         return (status, None)
 
-    def respond_reply(self, reply):
+    def respondReply(self, reply):
         """
         Reply to the specified incoming reply.
         """
 
-        (text, url) = self.get_response(reply.user.id, reply.text)
+        (text, url) = self.getResponse(reply.user.id, reply.text)
         self.microblog.post(text, url, reply)
         self.logger.info(
             'Sent a reply to @%s: %s',
             reply.user.screen_name, text)
 
-    def respond_message(self, message):
+    def respondMessage(self, message):
         """
         Send a response to the specified message.
         """
@@ -377,13 +387,13 @@ class Nagato(object):
                 message.user.id)
             return
 
-        (status, url) = self.get_response(message.user.id, message.text)
+        (status, url) = self.getResponse(message.user.id, message.text)
         text = (status + ' ' + url) if url else status
         self.microblog.send(text, message.user.id)
         self.logger.info('Sent a response message to @%s: %s',
                          message.sender_screen_name, text)
 
-    def post_random_phrase(self):
+    def postRandomPhrase(self):
         phrase = get_random_phrase()
         self.microblog.post(phrase)
 
@@ -395,21 +405,19 @@ class Nagato(object):
         self.logger.debug('Executing...')
         self.credential = self.microblog.verify_credentials()
 
-        reply = self.get_new_reply()
+        reply = self.getNewReply()
         if reply:
-            self.respond_reply(reply)
+            self.respondReply(reply)
 
-        message = self.get_new_message()
+        message = self.getNewMessage()
         if message:
-            self.respond_message(message)
+            self.respondMessage(message)
 
         # Post randomly roughly once a day.
         if not random.randrange(60 * 24):
-            self.post_random_phrase()
+            self.postRandomPhrase()
 
-        self.refollow()
-
-        self.logger.info('The home timeline speed is %d statuses/s', self.get_timeline_speed())
+        self.logger.info('The home timeline speed is %d statuses/s', self.getTimelineSpeed())
         self.logger.debug('Terminating...')
 
 # vim:set fenc=utf-8 ts=4 sw=4:

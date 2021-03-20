@@ -1,10 +1,10 @@
-from .stub_microblog_user import StubMicroblogUser
-from microblog.microblog_api import MicroblogApi
+from microblog import microblog_api
+from microblog import microblog_user
 
 
-class StubMicroblogApi(MicroblogApi):
+class StubMicroblogApi(microblog_api.MicroblogApi):
     def __init__(self):
-        self.me = StubMicroblogUser(15498, 'nagato')
+        self.me = microblog_user.MicroblogUser(15498, 'nagato')
         self.follower_ids = set()
         self.friend_ids = set()
         self.pending_friend_ids = set()

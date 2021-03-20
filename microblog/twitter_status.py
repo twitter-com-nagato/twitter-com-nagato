@@ -4,7 +4,7 @@ from . import microblog_status
 from . import twitter_user
 
 
-class Tweet(microblog_status.Status):
+class Tweet(microblog_status.MicroblogStatus):
     """
     A class which represents a tweet or a message on Twitter.
     """
