@@ -7,7 +7,7 @@ class YahooKeywordExtraction(KeywordExtraction):
 
     def extract(self, sentence):
         api_url = 'http://jlp.yahooapis.jp/KeyphraseService/V1/extract'
-        response = self.yapi(api_url, {
+        response = self.yapi.api(api_url, {
             'output': 'json',
             'sentence': sentence,
         }, 'POST')
