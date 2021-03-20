@@ -1,22 +1,17 @@
 from mastodon import Mastodon
-from . import mastodon_user
-from . import microblog_api
+from .mastodon_user import MastodonUser
+from .microblog_api import MicroblogApi
 from .mastodon_status import Toot
 
 
-class MastodonApi(microblog_api.MicroblogApi):
+class MastodonApi(MicroblogApi):
     def __init__(self, access_token, api_base_url):
         assert access_token, 'The access token is mandatory but not set.'
         assert api_base_url, 'The API base URL is mandatory but not set.'
-        self.credential = None
-        self.mastodon = Mastodon(
-                access_token=access_token,
-                api_base_url=api_base_url,
-                ratelimit_method='throw')
+        self.mastodon = Mastodon(access_token=access_token, api_base_url=api_base_url, ratelimit_method='throw')
+        self.credential = MastodonUser(self.mastodon.account_verify_credentials())
 
     def verify_credentials(self):
-        if not self.credential:
-            self.credential = mastodon_user.MastodonUser(self.mastodon.account_verify_credentials())
         return self.credential
 
     def get_home_statuses(self):
