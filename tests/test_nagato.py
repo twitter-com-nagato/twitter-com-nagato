@@ -1,6 +1,6 @@
-from . import stub_book_search
-from . import stub_keyword_extraction
-from . import stub_microblog_api
+from .stub_book_search import StubBookSearch
+from .stub_keyword_extraction import StubKeywordExtraction
+from .stub_microblog_api import StubMicroblogApi
 from microblog import microblog_status
 from microblog import microblog_user
 import datetime
@@ -11,10 +11,10 @@ import unittest
 
 class NagatoTest(unittest.TestCase):
     def setUp(self):
-        self.microblog = stub_microblog_api.StubMicroblogApi()
-        self.book_search = stub_book_search.StubBookSearch()
-        self.keyphrase_extraction = stub_keyword_extraction.StubKeywordExtraction()
-        self.nagato = nagato.Nagato(self.microblog, self.book_search, self.keyphrase_extraction)
+        self.microblog = StubMicroblogApi()
+        self.book_search = StubBookSearch()
+        self.keyphrase_extraction = StubKeywordExtraction()
+        self.nagato = nagato.Nagato( self.microblog, self.book_search, self.keyphrase_extraction)
 
         logger = logging.getLogger('nagato')
         logger.handlers = []

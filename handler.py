@@ -6,6 +6,7 @@ This script has the entry point for the invocation as an AWS Lambda function.
 
 import logging
 import os
+import sys
 import traceback
 from book_search import yahoo_shopping_book_search
 from keyword_extraction import yahoo_keyword_extraction
@@ -84,27 +85,25 @@ def create_nagato():
     return nagato
 
 
-def handle_refollow(event, context):
-    handle(lambda nagato: nagato.refollow())
+def refollow(event, context):
+    nagato = create_nagato()
+    nagato.refollow()
 
 
-def handle_random_post(event, context):
-    handle(lambda nagato: nagato.postRandomPhrase())
+def post_random_phrase(event, context):
+    nagato = create_nagato()
+    nagato.postRandomPhrase()
 
 
-def handle(callback):
-    """
-    Handles an invocation of AWS Lambda function.
-    """
-
-    try:
-        callback(create_nagato())
-    except Exception:
-        # Catch everything to avoid retrying failed invocations
-        # and running multiple instances concurrently.
-        traceback.print_exc()
-
-
-# Run
 if __name__ == '__main__':
-    handle(lambda nagato: nagato.run())
+    if len(sys.argv) < 2:
+        nagato = create_nagato()
+        nagato.run()
+    else:
+        operation = sys.argv[1]
+        if operation == 'refollow':
+            refollow(None, None)
+        elif operation == 'post_random_phrase':
+            post_random_phrase(None, None)
+        else:
+            raise Exception('Unsupported operation: %s' % operation)
