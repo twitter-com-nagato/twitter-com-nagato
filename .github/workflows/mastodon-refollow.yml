@@ -21,10 +21,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Download phrases
-      run: curl --output phrases.txt $NAGATO_PHRASES_URL
-      env:
-        NAGATO_PHRASES_URL: ${{ secrets.NAGATO_PHRASES_URL }}
     - name: Refollow
       run: python handler.py refollow
       env:
