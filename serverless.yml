@@ -33,7 +33,7 @@ functions:
   nagato_twitter:
     handler: handler.random_post
     events:
-      - schedule: rate(10 7 * * ? *)
+      - schedule: cron(10 7 * * ? *)
     environment:
       SLACK_WEBHOOK_URL: ${ssm:SLACK_WEBHOOK_URL}
       TWITTER_CONSUMER_KEY: ${ssm:TWITTER_CONSUMER_KEY}
