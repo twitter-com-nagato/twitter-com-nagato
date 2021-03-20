@@ -1,6 +1,5 @@
 from keyword_extraction import keyword_extraction
 import collections
-import logging
 import re
 
 

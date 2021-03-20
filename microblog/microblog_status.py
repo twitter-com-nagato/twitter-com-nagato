@@ -1,5 +1,5 @@
 import datetime
-from . import microblog_user
+from .microblog_user import MicroblogUser
 
 
 class MicroblogStatus(object):
@@ -7,7 +7,7 @@ class MicroblogStatus(object):
             self,
             id: str,
             text: str,
-            user: microblog_user.MicroblogUser,
+            user: MicroblogUser,
             created_at: datetime.datetime,
             in_reply_to_status_id: str,
             in_reply_to_user_id: str):
