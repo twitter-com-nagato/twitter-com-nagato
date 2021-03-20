@@ -1,8 +1,12 @@
 # 対Twitter・Mastodonユーザコンタクト用非公式ボットインターフェース
 
-![Deploy main branch](https://github.com/twitter-com-nagato/twitter-com-nagato/workflows/Deploy%20main%20branch/badge.svg)
 [![Python application](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/python-app.yml/badge.svg)](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/python-app.yml)
 [![CodeQL](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/codeql-analysis.yml)
+[![Post on Twitter](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/twitter-post-random-phrase.yml/badge.svg)](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/twitter-post-random-phrase.yml)
+[![Post on Mastodon](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/twitter-post-random-phrase.yml/badge.svg)](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/twitter-post-random-phrase.yml)
+[![Refollow on Twitter](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/twitter-refollow.yml/badge.svg)](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/twitter-refollow.yml)
+[![Refollow on Mastodon](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/mastodon-refollow.yml/badge.svg)](https://github.com/twitter-com-nagato/twitter-com-nagato/actions/workflows/mastodon-refollow.yml)
+
 
 ## 長門有希って誰？
 
@@ -60,6 +64,10 @@ python3 /path/to/handler.py
 割と不調な事が多いので、反応が無いときや止まっているとき、誤字脱字などを発見されたときには、@[nagato](https://twitter.com/nagato)または@[yukinagato](https://pawoo.net/@yukinagato)へのダイレクトメッセージにてご一報ください。
 
 ## 改変記録
+
+### 2021年3月21日
+
+- 設定の誤りによって動作が停止していた問題を修正
 
 ### 2020年12月30日
 
