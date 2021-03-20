@@ -8,7 +8,7 @@ class YahooShoppingBookSearch(BookSearch):
 
     def search(self, queries):
         api_url = 'http://shopping.yahooapis.jp/ShoppingWebService/V1/json/itemSearch'
-        response = self.yapi(api_url, {
+        response = self.yapi.api(api_url, {
             'query': ' '.join(queries),
             'category_id': 10002,
             'hits': 1,
