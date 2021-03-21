@@ -7,20 +7,19 @@ class YahooShoppingBookSearch(BookSearch):
         self.yapi = yapi
 
     def search(self, queries):
-        api_url = 'http://shopping.yahooapis.jp/ShoppingWebService/V1/json/itemSearch'
+        api_url = 'https://shopping.yahooapis.jp/ShoppingWebService/V3/itemSearch'
         response = self.yapi.api(api_url, {
             'query': ' '.join(queries),
-            'category_id': 10002,
-            'hits': 1,
+            'genre_category_id': 10002,
+            'results': 1,
         })
 
         if response:
-            result_set = response['ResultSet']
-            available_result_count = int(result_set['totalResultsAvailable'])
-            returned_result_count = int(result_set['totalResultsReturned'])
+            available_result_count = int(response['totalResultsAvailable'])
+            returned_result_count = int(response['totalResultsReturned'])
             if returned_result_count:
-                best_result = result_set['0']['Result']['0']
-                best_book = Book(best_result['Name'], best_result['Url'])
+                best_result = response['hits'][0]
+                best_book = Book(best_result['name'], best_result['url'])
                 return (best_book, available_result_count)
 
         return (None, 0)
