@@ -7,7 +7,6 @@ This script has the entry point for the invocation as an AWS Lambda function.
 import logging
 import os
 import sys
-import traceback
 from book_search import yahoo_shopping_book_search
 from keyword_extraction import yahoo_keyword_extraction
 from microblog import mastodon_api
