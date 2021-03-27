@@ -167,7 +167,7 @@ class Nagato(object):
         words = [word for word in re.split(r'\s', texts)
                  if word and (word[0] != '@') and (not is_url(word))]
         texts = ' '.join(words)
-        self.logger.debug('Words in statuses of #%d: %s', user_id, texts)
+        # self.logger.debug('Words in statuses of #%d: %s', user_id, texts)
 
         return self.keyword_extraction.extract(texts)
 
@@ -176,7 +176,7 @@ class Nagato(object):
         Recommends a book based on the specified key phrases using an item search API.
         """
 
-        self.logger.debug('Start a book recommendation with key phrases: %s', key_phrases)
+        # self.logger.debug('Start a book recommendation with key phrases: %s', key_phrases)
         best_book = None
         best_result_count = 0
         key_phrase_indice = [0]
@@ -185,11 +185,11 @@ class Nagato(object):
             self.logger.debug('Key phrase indice: %s', key_phrase_indice)
             queries = [key_phrases[i] for i in key_phrase_indice]
             (top_book, result_count) = self.book_search.search(queries)
-            self.logger.debug('%s -> %s (%d)', queries, top_book, result_count)
+            # self.logger.debug('%s -> %s (%d)', queries, top_book, result_count)
 
             # Update the best result set
             if top_book and ((not best_book) or (result_count < best_result_count)):
-                self.logger.debug('Candidate: %s -> %s', best_book, top_book)
+                # self.logger.debug('Candidate: %s -> %s', best_book, top_book)
                 best_result_count = result_count
                 best_book = top_book
 
@@ -220,7 +220,6 @@ class Nagato(object):
                     # No way
                     break
 
-        self.logger.info('Recommend: %s', best_book)
         return best_book
 
     def getLastRepliedStatusId(self, my_statuses=None):
@@ -331,7 +330,7 @@ class Nagato(object):
 
     def getBookRecommendation(self, user_id):
         key_phrases = self.getUserKeyPhrases(user_id)
-        self.logger.info('Book Recommendation Keyphrases: %s', key_phrases)
+        # self.logger.info('Book Recommendation Keyphrases: %s', key_phrases)
         book = self.recommendBook(key_phrases[:10])
         self.logger.info('Book Recommendation: %s', book)
         if book:
